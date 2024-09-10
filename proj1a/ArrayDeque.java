@@ -18,8 +18,8 @@ public class ArrayDeque<T> {
         if(size == array.length){
             this.resize();
         }
-        for (int i = 0; i < size; i++) {
-            array[i+1] = array[i];
+        for (int i = size; i > 0 ; i--) {
+            array[i] = array[i-1];
         }
         array[0] = data;
         size++;
@@ -38,19 +38,21 @@ public class ArrayDeque<T> {
         return res;
     }
 
-    public T removeFirst(){
-        if(size == 0){
+    public T removeFirst() {
+        if (size == 0) {
             return null;
         }
         T res = array[0];
-        for (int i = 0; i < size; i++) {
-            array[i] = array[i+1];
+        for (int i = 0; i < size - 1; i++) {  // 注意这里调整了循环边界
+            array[i] = array[i + 1];
         }
-        if(size <= array.length/4 && array.length >16){
+        array[--size] = null;  // 减少 size，清空最后一个元素
+        if (size <= array.length / 4 && array.length > 16) {
             this.shrink();
         }
         return res;
     }
+
 
     public boolean isEmpty(){
         return size == 0;
