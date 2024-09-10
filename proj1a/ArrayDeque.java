@@ -3,36 +3,43 @@ import java.util.Arrays;
 public class ArrayDeque<T> {
     private T[] array;
     private int size;
+    private int front;  // 头指针
+    private int back;   // 尾指针
+
     public ArrayDeque() {
-        array= (T[]) new Object[8];
+        array = (T[]) new Object[8];
         size = 0;
-    }
-    public void addLast(T data){
-        if(size == array.length){
-            this.resize();
-        }
-        array[size++] = data;
+        front = 0;
+        back = 0;
     }
 
-    public void addFirst(T data){
-        if(size == array.length){
+    public void addLast(T data) {
+        if (size == array.length) {
             this.resize();
         }
-        for (int i = size; i > 0 ; i--) {
-            array[i] = array[i-1];
-        }
-        array[0] = data;
+        array[back] = data;
+        back = (back + 1) % array.length;  // 循环数组，使用取模操作
         size++;
     }
 
+    public void addFirst(T data) {
+        if (size == array.length) {
+            this.resize();
+        }
+        front = (front - 1 + array.length) % array.length;  // 更新 front，循环数组
+        array[front] = data;
+        size++;
+    }
 
-    public T removeLast(){
-        if(size == 0){
+    public T removeLast() {
+        if (size == 0) {
             return null;
         }
-        T res = array[--size];
-        array[size] = null;
-        if(size <= array.length/4 && array.length >16){
+        back = (back - 1 + array.length) % array.length;  // 更新 back，循环数组
+        T res = array[back];
+        array[back] = null;
+        size--;
+        if (size <= array.length / 4 && array.length > 16) {
             this.shrink();
         }
         return res;
@@ -42,49 +49,56 @@ public class ArrayDeque<T> {
         if (size == 0) {
             return null;
         }
-        T res = array[0];
-        for (int i = 0; i < size - 1; i++) {  // 注意这里调整了循环边界
-            array[i] = array[i + 1];
-        }
-        array[--size] = null;  // 减少 size，清空最后一个元素
+        T res = array[front];
+        array[front] = null;
+        front = (front + 1) % array.length;  // 更新 front，循环数组
+        size--;
         if (size <= array.length / 4 && array.length > 16) {
             this.shrink();
         }
         return res;
     }
 
-
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return size == 0;
     }
 
-    public int size(){
+    public int size() {
         return size;
     }
-    public T get(int index){
-        return array[index];
+
+    public T get(int index) {
+        if (index < 0 || index >= size) {
+            return null;
+        }
+        return array[(front + index) % array.length];  // 通过 front 偏移得到正确的索引
     }
 
-    public ArrayDeque(ArrayDeque<T> other){
+    public ArrayDeque(ArrayDeque<T> other) {
         this.array = (T[]) new Object[other.array.length];
-        System.arraycopy(other.array, 0, this.array, 0, other.size);
         this.size = other.size;
+        this.front = other.front;
+        this.back = other.back;
+        System.arraycopy(other.array, 0, this.array, 0, other.array.length);
     }
 
-    private ArrayDeque(int len){
-        this.array = (T[]) new Object[len];
+    private void resize() {
+        T[] tempArray = (T[]) new Object[array.length * 2];
+        for (int i = 0; i < size; i++) {
+            tempArray[i] = array[(front + i) % array.length];  // 重新调整数据的顺序
+        }
+        array = tempArray;
+        front = 0;
+        back = size;
     }
 
     private void shrink() {
-            T[] temp_array = (T[]) new Object[array.length / 2];  // 缩小为原来的一半
-            System.arraycopy(array, 0, temp_array, 0, size);
-            array = temp_array;
+        T[] tempArray = (T[]) new Object[array.length / 2];
+        for (int i = 0; i < size; i++) {
+            tempArray[i] = array[(front + i) % array.length];  // 重新调整数据的顺序
+        }
+        array = tempArray;
+        front = 0;
+        back = size;
     }
-
-    private void resize(){
-        T[] temp_array = (T[])new Object[array.length*2];
-        System.arraycopy(array, 0, temp_array, 0, array.length);
-        array = temp_array;
-    }
-
 }
