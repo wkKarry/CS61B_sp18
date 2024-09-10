@@ -63,9 +63,10 @@ public class ArrayDeque<T> {
         return array[index];
     }
 
-    public ArrayDeque(ArrayDeque other){
+    public ArrayDeque(ArrayDeque<T> other){
         this.array = (T[]) new Object[other.array.length];
         System.arraycopy(other.array, 0, this.array, 0, other.size);
+        this.size = other.size;
     }
 
     private ArrayDeque(int len){
@@ -75,13 +76,13 @@ public class ArrayDeque<T> {
     private void shrink() {
             T[] temp_array = (T[]) new Object[array.length / 2];  // 缩小为原来的一半
             System.arraycopy(array, 0, temp_array, 0, size);
-            this.array = temp_array;
+            array = temp_array;
     }
 
     private void resize(){
         T[] temp_array = (T[])new Object[array.length*2];
         System.arraycopy(array, 0, temp_array, 0, array.length);
-        this.array = temp_array;
+        array = temp_array;
     }
 
 }

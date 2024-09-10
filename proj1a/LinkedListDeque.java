@@ -1,8 +1,8 @@
 public class LinkedListDeque<T> {
     private static class Node<T> {
         T data;
-        Node next;
-        Node prev;
+        Node<T> next;
+        Node<T> prev;
 
         public Node(T data) {
             this.data = data;
@@ -10,19 +10,20 @@ public class LinkedListDeque<T> {
             this.prev = null;
         }
 
-        public Node(T data, Node next, Node prev) {
+        public Node(T data, Node<T> next, Node<T> prev) {
             this.data = data;
             this.next = next;
             this.prev = prev;
         }
     }
 
-    private Node tail;
+    private Node<T> tail;
     private int size;
-    private Node sentinel;
+    private Node<T> sentinel;
 
     public LinkedListDeque() {
-        sentinel = new Node("sentinel");
+        // sentinel node's data is set to null, as it doesn't need to store any value.
+        sentinel = new Node<>(null);
         sentinel.next = sentinel;
         sentinel.prev = sentinel;
         tail = sentinel;
@@ -30,22 +31,25 @@ public class LinkedListDeque<T> {
     }
 
     public void addLast(T data) {
-        tail.next = new Node(data, null, tail);
-        tail = tail.next;
+        Node<T> newNode = new Node<>(data, sentinel, tail);
+        tail.next = newNode;
+        tail = newNode;
+        sentinel.prev = tail; // Update sentinel's prev to new tail
         size++;
     }
 
     public void addFirst(T data) {
-        sentinel.next = new Node(data, sentinel.next, sentinel);
+        Node<T> newNode = new Node<>(data, sentinel.next, sentinel);
+        sentinel.next.prev = newNode;
+        sentinel.next = newNode;
         if (size == 0) {
-            tail = sentinel.next;
+            tail = newNode;
         }
         size++;
     }
 
     public boolean isEmpty() {
-        if (size == 0) return true;
-        else return false;
+        return size == 0;
     }
 
     public int size() {
@@ -53,63 +57,59 @@ public class LinkedListDeque<T> {
     }
 
     public void printDeque() {
-        for (Node p = sentinel; p != tail; p = p.next) {
-            System.out.print(p.next.data + " ");
+        Node<T> current = sentinel.next;
+        while (current != sentinel) {
+            System.out.print(current.data + " ");
+            current = current.next;
         }
         System.out.println();
     }
 
     public T removeFirst() {
         if (size == 0) return null;
-        size--;
-        T pop = (T) sentinel.next.data;
-        sentinel.next = sentinel.next.next;
-        return pop;
+        Node<T> firstNode = sentinel.next;
+        T data = firstNode.data;
+        sentinel.next = firstNode.next;
+        firstNode.next.prev = sentinel;
+        if (--size == 0) {
+            tail = sentinel; // Reset tail when list becomes empty
+        }
+        return data;
     }
 
     public T removeLast() {
         if (size == 0) return null;
-        size--;
-        T pop = (T) tail.data;
+        T data = tail.data;
         tail = tail.prev;
         tail.next = sentinel;
-        return pop;
+        sentinel.prev = tail;
+        size--;
+        return data;
     }
 
     public T get(int index) {
-        if (size <= index) return null;
-        Node pointer = sentinel.next;
+        if (index >= size) return null;
+        Node<T> current = sentinel.next;
         for (int i = 0; i < index; i++) {
-            pointer = pointer.next;
+            current = current.next;
         }
-        return (T) pointer.data;
+        return current.data;
     }
 
     public T getRecursive(int index) {
-        if (size <= index) return null;
-        Node pointer = sentinel.next;
-        return helpRecursive(index, pointer);
+        if (index >= size) return null;
+        return helpRecursive(index, sentinel.next);
     }
 
-    private T helpRecursive(int num, Node pointer) {
+    private T helpRecursive(int num, Node<T> node) {
         if (num == 0) {
-            return (T) pointer.data;
+            return node.data;
         } else {
-            return helpRecursive(num - 1, pointer.next);
+            return helpRecursive(num - 1, node.next);
         }
     }
 
-    /*public LinkedListDeque(LinkedListDeque other) {
-        sentinel = new Node("sentinel");
-        sentinel.next = sentinel;
-        sentinel.prev = sentinel;
-        tail = sentinel;
-        size = other.size;
-        for(int i =0;i<size;i++){
-            T data = (T) other.removeLast();
-            this.addLast(data);
-        }
-    }*/
+    // Deep copy constructor
     public LinkedListDeque(LinkedListDeque<T> other) {
         sentinel = new Node<>(null);
         sentinel.next = sentinel;
@@ -123,5 +123,4 @@ public class LinkedListDeque<T> {
             current = current.next;
         }
     }
-
 }
