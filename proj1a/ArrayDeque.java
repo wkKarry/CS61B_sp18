@@ -1,19 +1,19 @@
 import java.util.Arrays;
 
-public class ArrayDeque<T> {
-    private T[] array;
+public class ArrayDeque<Item> {
+    private Item[] array;
     private int size;
     private int front;  // 头指针
     private int back;   // 尾指针
 
     public ArrayDeque() {
-        array = (T[]) new Object[8];
+        array = (Item[]) new Object[8];
         size = 0;
         front = 0;
         back = 0;
     }
 
-    public void addLast(T data) {
+    public void addLast(Item data) {
         if (size == array.length) {
             this.resize();
         }
@@ -22,7 +22,7 @@ public class ArrayDeque<T> {
         size++;
     }
 
-    public void addFirst(T data) {
+    public void addFirst(Item data) {
         if (size == array.length) {
             this.resize();
         }
@@ -31,12 +31,12 @@ public class ArrayDeque<T> {
         size++;
     }
 
-    public T removeLast() {
+    public Item removeLast() {
         if (size == 0) {
             return null;
         }
         back = (back - 1 + array.length) % array.length;  // 更新 back，循环数组
-        T res = array[back];
+        Item res = array[back];
         array[back] = null;
         size--;
         if (size <= array.length / 4 && array.length > 16) {
@@ -45,11 +45,11 @@ public class ArrayDeque<T> {
         return res;
     }
 
-    public T removeFirst() {
+    public Item removeFirst() {
         if (size == 0) {
             return null;
         }
-        T res = array[front];
+        Item res = array[front];
         array[front] = null;
         front = (front + 1) % array.length;  // 更新 front，循环数组
         size--;
@@ -67,15 +67,15 @@ public class ArrayDeque<T> {
         return size;
     }
 
-    public T get(int index) {
+    public Item get(int index) {
         if (index < 0 || index >= size) {
             return null;
         }
         return array[(front + index) % array.length];  // 通过 front 偏移得到正确的索引
     }
 
-    public ArrayDeque(ArrayDeque<T> other) {
-        this.array = (T[]) new Object[other.array.length];
+    public ArrayDeque(ArrayDeque<Item> other) {
+        this.array = (Item[]) new Object[other.array.length];
         this.size = other.size;
         this.front = other.front;
         this.back = other.back;
@@ -83,7 +83,7 @@ public class ArrayDeque<T> {
     }
 
     private void resize() {
-        T[] tempArray = (T[]) new Object[array.length * 2];
+        Item[] tempArray = (Item[]) new Object[array.length * 2];
         for (int i = 0; i < size; i++) {
             tempArray[i] = array[(front + i) % array.length];  // 重新调整数据的顺序
         }
@@ -93,7 +93,7 @@ public class ArrayDeque<T> {
     }
 
     private void shrink() {
-        T[] tempArray = (T[]) new Object[array.length / 2];
+        Item[] tempArray = (Item[]) new Object[array.length / 2];
         for (int i = 0; i < size; i++) {
             tempArray[i] = array[(front + i) % array.length];  // 重新调整数据的顺序
         }
