@@ -1,4 +1,4 @@
-public class ArrayDeque<Item>{
+public class ArrayDeque<Item> implements Deque<Item> {
     private Item[] array;
     private int size;
     private int front;  // 头指针
@@ -11,6 +11,7 @@ public class ArrayDeque<Item>{
         back = 0;
     }
 
+    @Override
     public void addLast(Item data) {
         if (size == array.length) {
             this.resize();
@@ -20,6 +21,7 @@ public class ArrayDeque<Item>{
         size++;
     }
 
+    @Override
     public void addFirst(Item data) {
         if (size == array.length) {
             this.resize();
@@ -29,8 +31,9 @@ public class ArrayDeque<Item>{
         size++;
     }
 
+    @Override
     public Item removeLast() {
-        if (size == 0) {
+        if (this.isEmpty()) {
             return null;
         }
         back = (back - 1 + array.length) % array.length;  // 更新 back，循环数组
@@ -43,8 +46,9 @@ public class ArrayDeque<Item>{
         return res;
     }
 
+    @Override
     public Item removeFirst() {
-        if (size == 0) {
+        if (this.isEmpty()) {
             return null;
         }
         Item res = array[front];
@@ -57,14 +61,17 @@ public class ArrayDeque<Item>{
         return res;
     }
 
+    @Override
     public boolean isEmpty() {
         return size == 0;
     }
 
+    @Override
     public int size() {
         return size;
     }
 
+    @Override
     public Item get(int index) {
         if (index < 0 || index >= size) {
             return null;
