@@ -34,6 +34,7 @@ public class Palindrome {
         Deque<Character>word_deque = wordToDeque(word);
         return isPalindrome(word_deque, cc);
     }
+
     private boolean isPalindrome(Deque<Character> word_deque, CharacterComparator cc){
         if(word_deque.isEmpty()){
             return true;
