@@ -82,7 +82,17 @@ public class IntList {
 
     public static IntList dcatenate(IntList A, IntList B) {
         //TODO:  fill in method
-        return null;
+        if (A == null){
+            A = B;
+            return A;
+        }
+        if (A.rest == null) {
+            A.rest = B;
+            return A;
+        }else{
+            dcatenate(A.rest, B);
+        }
+        return A;
     }
 
     /**
@@ -90,9 +100,22 @@ public class IntList {
      * * elements of B.  May NOT modify items of A.  Use 'new'.
      */
     public static IntList catenate(IntList A, IntList B) {
-        //TODO:  fill in method
-        return null;
+        if (A == null) {
+            return B;
+        }
+        IntList res = new IntList(A.first, null);
+        IntList ptr = res;
+
+        while (A.rest != null) {
+            A = A.rest;
+            ptr.rest = new IntList(A.first, null);
+            ptr = ptr.rest;
+        }
+
+        ptr.rest = B;  // 直接将B拼接到结果链表的末尾
+        return res;
     }
+
 
 
 
