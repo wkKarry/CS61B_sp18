@@ -4,10 +4,10 @@ public abstract class AbstractBoundedQueue <T> implements BoundedQueue<T> {
     protected int fillCount;
     protected int capacity;
     public int capacity(){
-        return 0;
+        return capacity;
     }
     public int fillCount(){
-        return 0;
+        return fillCount;
     }
     public abstract T peek();
     public abstract T dequeue();

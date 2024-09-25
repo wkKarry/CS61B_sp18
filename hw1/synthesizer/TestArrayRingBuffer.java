@@ -21,11 +21,16 @@ public class TestArrayRingBuffer {
         for (int i = 10; i < 15; i++) {
             arb.enqueue(i);
         }
+        assertFalse(arb.isEmpty());
         for (int i = 0; i < 114; i++) {
             assertEquals(arb.peek(), 5);
         }
         for(Object ne : arb){
             assertEquals(ne,arb.dequeue());
+        }
+        assertEquals(arb.fillCount(),10);
+        for (int i = 0; i < 10; i++) {
+            assertEquals(arb.dequeue(),i+5);
         }
         assert(arb.isEmpty());
     }
