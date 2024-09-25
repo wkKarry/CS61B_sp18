@@ -1,10 +1,11 @@
 // TODO: Make sure to make this class a part of the synthesizer package
 package synthesizer;
+
 import java.util.NoSuchElementException;
 
 //TODO: Make sure to make this class and all of its methods public
 //TODO: Make sure to make this class extend AbstractBoundedQueue<t>
-public class ArrayRingBuffer<T>  extends AbstractBoundedQueue<T> implements Iterable<T> {
+public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
     /* Index for the next dequeue or peek. */
     private int first;            // index for the next dequeue or peek
     /* Index for the next enqueue. */
@@ -37,9 +38,9 @@ public class ArrayRingBuffer<T>  extends AbstractBoundedQueue<T> implements Iter
         // TODO: Enqueue the item. Don't forget to increase fillCount and update last.
         if (fillCount == capacity) {
             throw new RuntimeException("Ring buffer overflow");
-        }else{
+        } else {
             rb[last] = x;
-            last = (last+1)%capacity;
+            last = (last + 1) % capacity;
             fillCount++;
         }
     }
@@ -53,10 +54,10 @@ public class ArrayRingBuffer<T>  extends AbstractBoundedQueue<T> implements Iter
         // TODO: Dequeue the first item. Don't forget to decrease fillCount and update
         if (fillCount == 0) {
             throw new RuntimeException("Ring buffer underflow");
-        }else{
+        } else {
             T dequeued = rb[first];
             rb[first] = null;
-            first = (first+1)%capacity;
+            first = (first + 1) % capacity;
             fillCount--;
             return dequeued;
         }
@@ -70,29 +71,31 @@ public class ArrayRingBuffer<T>  extends AbstractBoundedQueue<T> implements Iter
         // TODO: Return the first item. None of your instance variables should change.
         if (fillCount == 0) {
             throw new RuntimeException("Ring buffer underflow");
-        }else{
+        } else {
             return rb[first];
         }
     }
 
     // TODO: When you get to part 5, implement the needed code to support iteration.
 
-    private class Iterator implements java.util.Iterator<T> {
+    private class Iterator<T> implements java.util.Iterator<T> {
         private int current = first;
+
         public boolean hasNext() {
             return current != last;
         }
+
         public T next() {
             if (hasNext()) {
-                T R = rb[current];
-                current = (current + 1)%capacity;
+                T R = (T) rb[current];
+                current = (current + 1) % capacity;
                 return R;
             }
             throw new NoSuchElementException();
         }
     }
 
-    public Iterator iterator() {
+    public Iterator<T> iterator() {
         return new Iterator();
     }
 }
