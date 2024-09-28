@@ -48,13 +48,25 @@ public class UnionFind {
         return find(v1) == find(v2);
     }
 
-    public int find(int v1) {
+    /*public int find(int v1) {
         validate(v1);
         while (vertices[v1] >= 0) {
             int index = v1;
             v1 = parent(v1);
         }
         return v1;
+    }*/
+    public int find(int v1) {
+        validate(v1);
+        if (vertices[v1] < 0) {
+            return v1; // v1 is already a root
+        } else {
+            // Path compression: Connect all nodes along the path to the root
+            int root = find(vertices[v1]);
+            vertices[v1] = root; // Update the parent of v1 to be the root
+            return root;
+        }
     }
+
 
 }
