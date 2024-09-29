@@ -28,7 +28,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     private Node root;  /* Root node of the tree. */
     private int size; /* The number of key-value pairs in the tree */
 
-    /* Creates an empty BSTMap. */
+    /* Creates an empty bstmap.BSTMap. */
     public BSTMap() {
         this.clear();
     }
@@ -55,8 +55,8 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         throw new UnsupportedOperationException();
     }
 
-    /** Returns a BSTMap rooted in p with (KEY, VALUE) added as a key-value mapping.
-      * Or if p is null, it returns a one node BSTMap containing (KEY, VALUE).
+    /** Returns a bstmap.BSTMap rooted in p with (KEY, VALUE) added as a key-value mapping.
+      * Or if p is null, it returns a one node bstmap.BSTMap containing (KEY, VALUE).
      */
     private Node putHelper(K key, V value, Node p) {
         throw new UnsupportedOperationException();
