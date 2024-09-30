@@ -1,5 +1,6 @@
 package bstmap;
 
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -27,14 +28,25 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
         public void print() {
 
-            System.out.print(key);
-            System.out.println(value);
             if (right != null) {
                 right.print();
             }
+            System.out.print(key);
+            System.out.println(value);
             if (left != null) {
                 left.print();
             }
+        }
+
+        private Set<K> helpKeySET(Set<K> set) {
+            if (right != null) {
+                right.helpKeySET(set);
+            }
+            set.add(key);
+            if (left != null) {
+                left.helpKeySET(set);
+            }
+            return set;
         }
 
         public BSTNode get(K key) {
@@ -52,17 +64,17 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
             }
         }
 
-        public BSTNode getMaxKey(K key) {
+        public BSTNode getMaxKey() {
             if (right != null) {
-                return right.getMaxKey(key);
+                return right.getMaxKey();
             } else {
                 return this;
             }
         }
 
-        public BSTNode getMinKey(K key) {
+        public BSTNode getMinKey() {
             if (left != null) {
-                return left.getMinKey(key);
+                return left.getMinKey();
             } else {
                 return this;
             }
@@ -78,7 +90,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
         public BSTNode getMAXParentKey(K key) {
             if (right.right != null) {
-                return right.getMINParentKey(key);
+                return right.getMAXParentKey(key);
             } else {
                 return this;
             }
@@ -127,9 +139,14 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     public V get(K key) {
         if (root == null) {
             return null;
-        }
-        return root.get(key).value;
-    }
+        }else{
+             BSTNode node = root.get(key);
+             if (node != null) {
+                 return node.value;
+             }else{
+                 return null;
+             }
+    }}
 
 
     public int size() {
@@ -176,29 +193,43 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         if (lookup == root) {
             if (lookup.left == null && lookup.right == null) {
                 clear();
+                return re;
             } else if (lookup.left == null && lookup.right != null) {
                 root = lookup.right;
+                size--;
                 return re;
             } else if (lookup.left != null && lookup.right == null) {
                 root = lookup.left;
+                size--;
+
                 return re;
             } else {
                 double t = Math.random();
                 if (t < 0.5) {
-                    BSTNode MAX_parent = lookup.left.getMAXParentKey(key);
-                    BSTNode MAX = MAX_parent.right;
-                    MAX_parent.right = MAX.left;
-                    root.key = MAX.key;
-                    root.value = MAX.value;
-                    //root=new BSTNode(MAX.key,MAX.value,root.left,root.right);
-                    return re;
-                } else {
-                    BSTNode MIN_parent = lookup.right.getMINParentKey(key);
-                    BSTNode MIN = MIN_parent.left;
-                    MIN_parent.left = MIN.right;
+                    BSTNode MIN = lookup.right.getMinKey();
+                    BSTNode MIN_parent = root.getParent(MIN);
+                    if (MIN_parent == root) {
+                        MIN_parent.right = MIN.right;
+                    } else {
+                        MIN_parent.left = MIN.right;
+                    }
                     root.key = MIN.key;
                     root.value = MIN.value;
+                    size--;
+
+                    return re;
+                } else {
+                    BSTNode MAX = lookup.left.getMaxKey();
+                    BSTNode max_parent = root.getParent(MAX);
+                    if (max_parent == root) {
+                        max_parent.left = MAX.left;
+                    } else {
+                        max_parent.right = MAX.left;
+                    }
+                    root.key = MAX.key;
+                    root.value = MAX.value;
                     //root=new BSTNode(MIN.key,MIN.value,root.left,root.right);
+                    size--;
                     return re;
                 }
             }
@@ -226,9 +257,13 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         } else {
             double t = Math.random();
             if (t < 0.5) {
-                BSTNode MAX_parent = lookup.left.getMAXParentKey(key);
-                BSTNode MAX = MAX_parent.right;
-                MAX_parent.right = MAX.left;
+                BSTNode MAX = lookup.left.getMaxKey();
+                BSTNode MAX_parent = root.getParent(MAX);
+                if (MAX_parent == root) {
+                    MAX_parent.left = MAX.left;
+                } else {
+                    MAX_parent.right = MAX.left;
+                }
                 if (parent.key.compareTo(key) > 0) {
                     parent.left = new BSTNode(MAX.key, MAX.value, lookup.right, lookup.left);
                     ;
@@ -237,9 +272,13 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
                     ;
                 }
             } else {
-                BSTNode MIN_parent = lookup.right.getMINParentKey(key);
-                BSTNode MIN = MIN_parent.left;
-                MIN_parent.left = MIN.right;
+                BSTNode MIN = lookup.right.getMinKey();
+                BSTNode MIN_parent = root.getParent(MIN);
+                if (MIN_parent == root) {
+                    MIN_parent.right = MIN.right;
+                } else {
+                    MIN_parent.left = MIN.right;
+                }
                 if (parent.key.compareTo(key) > 0) {
                     parent.left = new BSTNode(MIN.key, MIN.value, lookup.right, lookup.left);
                     ;
@@ -259,8 +298,11 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     }
 
     public Set<K> keySet() {
-        throw new UnsupportedOperationException();
+        Set<K> set = new HashSet<>();
+        return this.root.helpKeySET(set);
     }
+
+
 
     public V remove(K key, V value) {
         throw new UnsupportedOperationException();
