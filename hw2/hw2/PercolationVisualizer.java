@@ -82,6 +82,6 @@ public class PercolationVisualizer {
 
     public static void main(String[] args) {
         String filename = args[0];
-        simulateFromFile("E:\\CS61B\\sp18\\hw2\\inputFiles\\"+filename);
+        simulateFromFile(filename);
     }
 }
