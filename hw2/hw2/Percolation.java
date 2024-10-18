@@ -52,9 +52,9 @@ public class Percolation {
         if (col+1<range && map[row][col+1].open) {
             uf.union(map[row][col+1].no,map[row][col].no);
         }
-        if (row == range - 1){
+        /*if (row == range - 1){
             uf.union(map[row][col].no,range * range + 1);
-        }
+        }*/
         num++;
     }
 
@@ -69,7 +69,15 @@ public class Percolation {
     public int numberOfOpenSites(){
         return num;
     }
-    public boolean percolates(){
+    /*public boolean percolates(){
         return uf.connected(0,range * range + 1);
+    }*/
+    public boolean percolates() {
+        for (int i = range*(range-1)+1; i < range*range + 1; i++) {
+            if (uf.connected(i,0)){
+                return true;
+            }
+        }
+        return false;
     }
 }
